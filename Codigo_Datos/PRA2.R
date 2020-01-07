@@ -727,6 +727,13 @@ modelo_krustal
 ggplot(data, aes(x=Pclass, y=Price)) +
   geom_boxplot(fill=(hue_pal()(3))) +
   ggtitle("Boxplot Price (by Pclass)")
+
+
+#################################################################################
+# MODELOS: Regresion logística (4 implementaciones)
+#          Árbol de decisión (2 implementaciones)
+#          Random Forest
+#          Gradient Boosting
 #################################################################################
 #################################################################################
 # Variables originales
@@ -965,9 +972,9 @@ grid.arrange(g1, g2, nrow=2)
 data$SurvivedNum <- NULL
 
 ################################################################
-#ARBOL DE DECISION
+# ÁRBOLES DE DECISIÓN
 ################################################################
-#Arbol de decision
+# Árbol de decisión 1
 ################################################################
 tctrl <- caret::trainControl(method = "repeatedcv",
                              number=10, repeats = 3)
@@ -992,7 +999,7 @@ csstab_tree1 <- CrossTable(data_test$Survived, predict_tree1,
                           dnn = c('Reality', 'Prediction'))
 print(plot_matriz_confusion(csstab_tree1))
 #################################################################
-# Arbol decision2
+# Árbol decision 2
 #################################################################
 tctrl <- caret::trainControl(method = "repeatedcv",
                              number=10, repeats = 3)
@@ -1063,6 +1070,8 @@ ggplot(datosVarImp)+
   coord_flip() + ggtitle("Importancia de las variables")
 
 #################################################################
+# GRADIENT BOOSTING
+#################################################################
 #Vamos a utilizar otros conjuntos train y test
 #porque hay que hacer conversiones numéricas (las categóricas a numéricas)
 train_xgb <- data_train
@@ -1124,57 +1133,11 @@ ggroc(list(xgboost=rxgb),
 #################################################################
 
 
-df_status(train_xgb)
-table(train_xgb$Pclass)
-table(train_xgb$Embarked)
-train_xgb <- data_train
-test_xgb <- data_test
-train_xgb$Sex <- as.integer(ifelse((train_xgb$Sex == "male"),1,0))
-test_xgb$Sex <- as.integer(ifelse((test_xgb$Sex == "male"),1,0))
-train_xgb$Pclass <- as.integer(as.character(train_xgb$Pclass))
-test_xgb$Pclass <- as.integer(as.character(test_xgb$Pclass))
-train_xgb$Embarked <- as.integer(ifelse((train_xgb$Embarked == "C"),0,ifelse(train_xgb$Embarked=='Q',1,2)))
-test_xgb$Embarked <- as.integer(ifelse((test_xgb$Embarked == "C"),0,ifelse(test_xgb$Embarked=='Q',1,2)))
-train_xgb$Child <- as.integer(as.character(train_xgb$Child))
-test_xgb$Child <- as.integer(as.character(test_xgb$Child))
-train_xgb$AgeInterval <- as.integer(as.character(train_xgb$AgeInterval))
-test_xgb$AgeInterval <- as.integer(as.character(test_xgb$AgeInterval))
-train_xgb$Survived <- as.integer(as.character(train_xgb$Survived))
-test_xgb$Survived <- as.integer(as.character(test_xgb$Survived))
-train_xgb$HombreAdultoSolo <- NULL
-test_xgb$HombreAdultoSolo <- NULL
-library(xgboost)
-predictores <- c('Pclass', 'Parch', 'SibSp','Fare', 'Sex')  #81.98
-predictores <- c('Sex', 'Child', 'Pclass', 'AgeInterval','Fare')  #84.23
-#predictores <- c('Pclass', 'Embarked', 'Parch', 'SibSp','Fare', 'Sex')  #80.63
-var.objetivo <- train_xgb$Survived
-modelo.XGB <- xgboost(data = as.matrix(train_xgb[,predictores]), 
-                      label = var.objetivo,
-                      objective = "binary:logistic",
-                      eval_metric = "logloss",
-                      max_depth = 8,
-                      nfold=4,
-                      nrounds = 100) 
-prediccion_xgb <- predict(modelo.XGB, as.matrix(test_xgb[,predictores]))
-rxgb = roc(response=test_xgb$Survived, predictor = prediccion_xgb)
-plot(rxgb, lty=2, lwd=2)
-print(rxgb$auc)
-valor_threshold <- coords(rxgb, "best", ret = "threshold")
-
-predict_xgb <- ifelse(prediccion_xgb <= valor_threshold, 0, 1)
-mat.confusion_xgb <- table(test_xgb$Survived, predict_xgb)
-mat.confusion_xgb
-porcentaje.correcto_xgb <- 100 * sum(diag(mat.confusion_xgb)) / sum(mat.confusion_xgb)
-print(sprintf("El %% de registros correctamente clasificados es: %.4f %%",
-              porcentaje.correcto_xgb))
-
-
-
-
-
 ############################################################################
-#Graficos
+############################################################################
+## GRAFICOS
 ###########################################################################
+############################################################################
 colores_defecto_ggplot = (hue_pal()(2))
 colores_defecto_ggplot_3 = (hue_pal()(3))
 #Supervivencia
