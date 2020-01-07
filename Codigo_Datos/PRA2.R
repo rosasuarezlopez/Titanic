@@ -1924,7 +1924,7 @@ datos.real.predict <- cbind(as.integer(as.character(data$Survived)),
 colnames(datos.real.predict) <- c('Survived', 'Predicted')
 fichero.pred.total <- "prediccion_dataset_total.csv"
 #Grabamos el fichero
-write.csv(data, file=fichero.pred.total, row.names = FALSE)
+write.csv(datos.real.predict, file=fichero.pred.total, row.names = FALSE)
 
 #Para al dataset de test ya lo tenemos, es predict_tree2
 #Juntamos realidad y prediccion
@@ -1934,6 +1934,6 @@ colnames(datos.real.predict) <- c('Survived', 'Predicted')
 dim(datos.real.predict)
 fichero.pred.test <- "prediccion_dataset_test.csv"
 #Grabamos el fichero
-write.csv(data, file=fichero.pred.test, row.names = FALSE)
+write.csv(datos.real.predict, file=fichero.pred.test, row.names = FALSE)
 
 
