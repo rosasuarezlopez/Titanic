@@ -1929,7 +1929,7 @@ predict_fin <-predict(model_tree2, data)
 
 #Lo que vamos a hacer es añadir la columna de la prediccion a nuestro 
 #dataset limpio y enriquecido y lo vamos a guardar en nuevo fichero
-
+data$Survived_Predicted <- predict_fin
 #################################################################
 # Grabar los datos que hemos limpiado y enriquecido + predicción
 # en un nuevo fichero CSV
