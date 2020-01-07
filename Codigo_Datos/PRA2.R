@@ -1908,7 +1908,8 @@ p2<-ggplot(data, aes(Pclass, y=Price)) +
 grid.arrange(p1, p2, nrow=2)
 
 #################################################################
-# Grabar los datos en un nuevo fichero
+# Grabar los datos que hemos limpiado y enriquecido 
+# en un nuevo fichero CSV
 #################################################################
 fichero.nuevo <- "titanic_enriquecido.csv"
 # Grabar los datos
@@ -1916,24 +1917,24 @@ write.csv(data, file=fichero.nuevo, row.names = FALSE)
 
 
 
+#################################################################
+# Realizar la prediccion con el modelo elegido en todo el dataset
+#################################################################
+
 #Realizamos la predicción con el modelo construido con rpart y el dataset total
 predict_fin <-predict(model_tree2, data)
 #Juntamos realidad y prediccion
-datos.real.predict <- cbind(as.integer(as.character(data$Survived)), 
-                            as.integer(as.character(predict_fin)))
-colnames(datos.real.predict) <- c('Survived', 'Predicted')
-fichero.pred.total <- "prediccion_dataset_total.csv"
-#Grabamos el fichero
-write.csv(datos.real.predict, file=fichero.pred.total, row.names = FALSE)
+#datos.real.predict <- cbind(as.integer(as.character(data$Survived)), 
+#                            as.integer(as.character(predict_fin)))
 
-#Para al dataset de test ya lo tenemos, es predict_tree2
-#Juntamos realidad y prediccion
-datos.real.predict <- cbind(as.integer(as.character(data_test$Survived)),
-                            as.integer(as.character(predict_tree2)))
-colnames(datos.real.predict) <- c('Survived', 'Predicted')
-dim(datos.real.predict)
-fichero.pred.test <- "prediccion_dataset_test.csv"
-#Grabamos el fichero
-write.csv(datos.real.predict, file=fichero.pred.test, row.names = FALSE)
+#Lo que vamos a hacer es añadir la columna de la prediccion a nuestro 
+#dataset limpio y enriquecido y lo vamos a guardar en nuevo fichero
 
+#################################################################
+# Grabar los datos que hemos limpiado y enriquecido + predicción
+# en un nuevo fichero CSV
+#################################################################
+fichero.nuevo <- "titanic_enriquecido_predict.csv"
+# Grabar los datos
+write.csv(data, file=fichero.nuevo, row.names = FALSE)
 
